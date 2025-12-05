@@ -10,7 +10,7 @@ const SALES_KEY = "attar_sales_v1";
 const CURRENT_USER_KEY = "attar_current_user_v1";
 
 const USERS = [
-  { username: "admin",   password: "admin123",   displayName: "Admin",   role: "admin" },
+  { username: "admin", password: "admin123", displayName: "Admin", role: "admin" },
   { username: "cashier", password: "cashier123", displayName: "Cashier", role: "cashier" }
 ];
 
@@ -100,10 +100,10 @@ function handleLogin() {
   if (errorEl) errorEl.textContent = "";
   passwordEl.value = "";
   setCurrentUser({
-  username: user.username,
-  displayName: user.displayName,
-  role: user.role
-});
+    username: user.username,
+    displayName: user.displayName,
+    role: user.role
+  });
 
 }
 
@@ -494,13 +494,13 @@ function initInventoryPage() {
   const form = document.getElementById("inventory-form");
   if (form) {
     form.addEventListener("submit", (e) => {
-  e.preventDefault();
+      e.preventDefault();
 
-  // 🚫 Cashier cannot add inventory
-  if (!canEditInventory()) {
-    notifyError("You don't have permission to modify inventory. (Cashier view-only)");
-    return;
-  }
+      // 🚫 Cashier cannot add inventory
+      if (!canEditInventory()) {
+        notifyError("You don't have permission to modify inventory. (Cashier view-only)");
+        return;
+      }
       const nameEl = document.getElementById("itemName");
       const typeEl = document.getElementById("itemType");
       const priceEl = document.getElementById("itemPrice");
@@ -516,10 +516,10 @@ function initInventoryPage() {
         notifyError("Please enter item name.");
         return;
       }
-   if (Number.isNaN(priceVal) || priceVal < 0) {
-  notifyError("Please enter a valid price.");
-  return;
-}
+      if (Number.isNaN(priceVal) || priceVal < 0) {
+        notifyError("Please enter a valid price.");
+        return;
+      }
       if (Number.isNaN(stockVal) || stockVal < 0) {
         notifyError("Please enter a valid stock quantity.");
         return;
@@ -773,8 +773,8 @@ function generateInvoicePDF() {
 
   const customerName =
     (document.getElementById("customerName")?.value.trim()) || "Customer";
- const customerMobile =
-  (document.getElementById("customerMobile")?.value.trim()) || "";
+  const customerMobile =
+    (document.getElementById("customerMobile")?.value.trim()) || "";
   const invoiceNumber =
     (document.getElementById("invoiceNumber")?.value.trim()) || "N/A";
   const invoiceDate =
@@ -962,7 +962,7 @@ function renderSalesForDate(dateStr) {
 
       const mobileTd = document.createElement("td");
       mobileTd.textContent = sale.customerMobile || "-";
- 
+
       const userTd = document.createElement("td");
       userTd.textContent = sale.createdByName || sale.createdBy || "-";
 
@@ -1245,6 +1245,8 @@ function initBillingPage() {
       const totals = calculateTotals();
       const customerName =
         (document.getElementById("customerName")?.value.trim()) || "Customer";
+      const customerMobile =
+        (document.getElementById("customerMobile")?.value.trim()) || "";
 
       const invoiceDateVal = document.getElementById("invoiceDate")?.value;
       const saleDate = invoiceDateVal || todayDateString();
@@ -1258,7 +1260,7 @@ function initBillingPage() {
         timestamp: new Date().toISOString(),
         invoiceNumber,
         customerName,
-	customerMobile,
+        customerMobile,
         createdBy: currentUser.username,
         createdByName: currentUser.displayName || currentUser.username,
         totals: { ...totals },
@@ -1279,8 +1281,7 @@ function initBillingPage() {
       }
 
       notifySuccess(
-        `Sale confirmed.\nUser: ${
-          currentUser.displayName || currentUser.username
+        `Sale confirmed.\nUser: ${currentUser.displayName || currentUser.username
         }\nCustomer: ${customerName}\nInvoice: ${invoiceNumber}\nGrand Total (incl. GST): ₹${totals.grandTotal.toFixed(
           2
         )}\nAmount in words: ${amountWords}`
