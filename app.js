@@ -1248,6 +1248,12 @@ function initBillingPage() {
       const customerMobile =
         (document.getElementById("customerMobile")?.value.trim()) || "";
 
+      // Validate mobile number if provided
+      if (customerMobile && !/^\d{10}$/.test(customerMobile)) {
+        notifyError("Mobile number must be exactly 10 digits.");
+        return;
+      }
+
       const invoiceDateVal = document.getElementById("invoiceDate")?.value;
       const saleDate = invoiceDateVal || todayDateString();
 
@@ -1340,6 +1346,20 @@ function initBillingPage() {
     salesDate.addEventListener("change", (e) => {
       const dateStr = e.target.value || todayDateString();
       renderSalesForDate(dateStr);
+    });
+  }
+
+  // Mobile number validation - allow only digits and max 10 characters
+  const customerMobileInput = document.getElementById("customerMobile");
+  if (customerMobileInput) {
+    customerMobileInput.addEventListener("input", (e) => {
+      // Remove any non-digit characters
+      e.target.value = e.target.value.replace(/\D/g, "");
+
+      // Limit to 10 digits
+      if (e.target.value.length > 10) {
+        e.target.value = e.target.value.slice(0, 10);
+      }
     });
   }
 }
