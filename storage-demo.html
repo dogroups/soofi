@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Demo - SOOFI ATTARS</title>
+    <link href="https://fonts.cdnfonts.com/css/sahara-scrolls" rel="stylesheet">
+    <style>
+        /* === SAME DESIGN SYSTEM AS MAIN APP === */
+        :root {
+            --deep-green: #064e3b;
+            --soft-green: #0f766e;
+            --gold: #facc15;
+            --gold-deep: #d4af37;
+            --text-main: #f9fafb;
+            --text-muted: #a1a1aa;
+            --success: #22c55e;
+            --error: #dc2626;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #064e3b 0, #020617 55%, #000 100%);
+            color: var(--text-main);
+            padding: 1.5rem;
+        }
+
+        /* LOGIN SCREEN */
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top, #064e3b 0, #020617 60%, #000 100%);
+            z-index: 50;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 360px;
+            background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.3), rgba(15, 23, 42, 0.98));
+            border-radius: 20px;
+            padding: 1.5rem 1.5rem 1.3rem;
+            border: 1px solid rgba(250, 204, 21, 0.4);
+            box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.9),
+                0 0 60px rgba(22, 163, 74, 0.5);
+        }
+
+        .login-title {
+            font-size: 2.3rem;
+            font-family: 'Sahara Scrolls', serif !important;
+            letter-spacing: 0.18em;
+            text-transform: capitalize !important;
+            color: var(--gold);
+            margin-bottom: 0.1rem;
+            text-align: center;
+        }
+
+        .login-subtitle {
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .login-card label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            display: inline-block;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 0.45rem 0.55rem;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+            margin-bottom: 0.65rem;
+        }
+
+        .login-card input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.4);
+            background: rgba(15, 23, 42, 1);
+        }
+
+        .login-card .login-btn {
+            width: 100%;
+            margin-top: 0.3rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .login-hint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 0.3rem;
+        }
+
+        .login-error {
+            min-height: 1rem;
+            font-size: 0.75rem;
+            color: #fecaca;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .app-container {
+            backdrop-filter: blur(14px);
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.16), rgba(0, 0, 0, 0.8));
+            border-radius: 24px;
+            border: 1px solid rgba(250, 204, 21, 0.35);
+            box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.8),
+                0 0 80px rgba(22, 163, 74, 0.25),
+                inset 0 0 0 1px rgba(15, 118, 110, 0.3);
+            padding: 1.75rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .brand-title {
+            font-size: 2.5rem;
+            font-family: 'Sahara Scrolls', serif !important;
+            letter-spacing: 0.04em;
+            color: var(--gold);
+            text-transform: capitalize !important;
+            text-shadow:
+                0 0 12px rgba(250, 204, 21, 0.7),
+                0 0 30px rgba(21, 128, 61, 0.6);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.35rem;
+        }
+
+        .user-info-header {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .small-btn {
+            padding: 0.2rem 0.45rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            color: #e5e7eb;
+            box-shadow: none;
+            cursor: pointer;
+        }
+
+        .small-btn:hover {
+            background: rgba(22, 163, 74, 0.9);
+            border-color: rgba(52, 211, 153, 0.8);
+        }
+
+        .demo-section {
+            background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.15), rgba(15, 23, 42, 0.95));
+            border-radius: 16px;
+            padding: 1.25rem;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+            margin-bottom: 1.25rem;
+        }
+
+        h2 {
+            color: var(--gold);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.75rem;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 999px;
+            padding: 0.5rem 0.85rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+            color: #111827;
+            box-shadow: 0 8px 20px rgba(250, 204, 21, 0.3);
+            transition: all 0.1s ease;
+            margin: 0.35rem;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(250, 204, 21, 0.4);
+        }
+
+        .output {
+            background: rgba(15, 23, 42, 0.8);
+            color: #86efac;
+            padding: 1rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .success {
+            color: #86efac;
+        }
+
+        .error {
+            color: #fca5a5;
+        }
+
+        .info {
+            color: #93c5fd;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .stat-box {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 118, 110, 0.9));
+            color: #e5e7eb;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="login-title">Soofi Attars</div>
+            <div class="login-subtitle">Staff Login</div>
+
+            <label for="login-username">Username</label>
+            <input id="login-username" type="text" placeholder="e.g. admin" />
+
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" placeholder="••••••••" />
+
+            <div class="login-hint">
+                Demo users: <strong>admin</strong> | <strong>cashier</strong>
+            </div>
+
+            <button type="button" class="login-btn" id="login-btn">Login</button>
+            <div class="login-error" id="login-error"></div>
+        </div>
+    </div>
+
+    <div class="container" id="app-container">
+        <div class="app-container">
+            <div class="header">
+                <div>
+                    <div class="brand-title">🚀 Storage System Demo</div>
+                    <div class="subtitle">Interactive demonstration of storage features</div>
+                </div>
+                <div class="user-info">
+                    <div class="user-info-header">
+                        <span>Logged in as: <strong id="currentUserName">-</strong></span>
+                        <button type="button" class="small-btn" id="logout-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage Info -->
+            <div class="demo-section">
+                <h2>📊 Storage Information</h2>
+                <button onclick="showStorageInfo()">Get Storage Info</button>
+                <div id="storageInfo" class="output" style="display: none;"></div>
+            </div>
+
+            <!-- Inventory Demo -->
+            <div class="demo-section">
+                <h2>📦 Inventory Operations</h2>
+                <button onclick="addSampleInventory()">Add Sample Items</button>
+                <button onclick="showInventory()">Show Inventory</button>
+                <button onclick="clearInventory()">Clear Inventory</button>
+                <div id="inventoryOutput" class="output" style="display: none;"></div>
+            </div>
+
+            <!-- Sales Demo -->
+            <div class="demo-section">
+                <h2>💰 Sales Operations</h2>
+                <button onclick="addSampleSale()">Add Sample Sale</button>
+                <button onclick="showSales()">Show Sales</button>
+                <button onclick="showSalesStats()">Show Statistics</button>
+                <div id="salesOutput" class="output" style="display: none;"></div>
+            </div>
+
+            <!-- Backup Demo -->
+            <div class="demo-section">
+                <h2>💾 Backup & Restore</h2>
+                <button onclick="createDemoBackup()">Create Backup</button>
+                <button onclick="listDemoBackups()">List Backups</button>
+                <button onclick="exportDemoData()">Export Data</button>
+                <div id="backupOutput" class="output" style="display: none;"></div>
+            </div>
+
+            <!-- Validation Demo -->
+            <div class="demo-section">
+                <h2>🔍 Data Validation</h2>
+                <button onclick="validateDemoData()">Validate Data</button>
+                <button onclick="corruptData()">Corrupt Data (Demo)</button>
+                <button onclick="repairDemoData()">Repair Data</button>
+                <div id="validationOutput" class="output" style="display: none;"></div>
+            </div>
+
+            <!-- Statistics Dashboard -->
+            <div class="demo-section">
+                <h2>📈 Live Statistics</h2>
+                <button onclick="refreshStats()">Refresh Stats</button>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value" id="statInventory">0</div>
+                        <div class="stat-label">Inventory Items</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statSales">0</div>
+                        <div class="stat-label">Sales Records</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statRevenue">₹0</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statStorage">0%</div>
+                        <div class="stat-label">Storage Used</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-success" onclick="window.location.href='storage-manager.html'">
+                    Open Storage Manager →
+                </button>
+                <button class="btn-secondary" onclick="window.location.href='index.html'">
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="storage.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // ========== AUTH / LOGIN ==========
+        let currentUser = null;
+
+        const USERS = [
+            { username: "admin", password: "admin123", displayName: "Admin", role: "admin" },
+            { username: "cashier", password: "cashier123", displayName: "Cashier", role: "cashier" }
+        ];
+
+        function setCurrentUser(user) {
+            currentUser = user || null;
+            const app = document.getElementById("app-container");
+            const loginScreen = document.getElementById("login-screen");
+            const nameSpan = document.getElementById("currentUserName");
+
+            if (currentUser) {
+                storage.saveCurrentUser(currentUser);
+                if (nameSpan) nameSpan.textContent = currentUser.displayName || currentUser.username;
+                if (loginScreen) loginScreen.style.display = "none";
+                if (app) app.style.display = "block";
+            } else {
+                storage.clearCurrentUser();
+                if (nameSpan) nameSpan.textContent = "-";
+                if (app) app.style.display = "none";
+                if (loginScreen) loginScreen.style.display = "flex";
+            }
+        }
+
+        function tryAutoLogin() {
+            const stored = storage.getCurrentUser();
+            if (!stored) {
+                const ls = document.getElementById("login-screen");
+                if (ls) ls.style.display = "flex";
+                return;
+            }
+            setCurrentUser(stored);
+        }
+
+        function handleLogin() {
+            const usernameEl = document.getElementById("login-username");
+            const passwordEl = document.getElementById("login-password");
+            const errorEl = document.getElementById("login-error");
+            if (!usernameEl || !passwordEl) return;
+
+            const username = usernameEl.value.trim();
+            const password = passwordEl.value;
+
+            const user = USERS.find(
+                (u) => u.username === username && u.password === password
+            );
+
+            if (!user) {
+                if (errorEl) errorEl.textContent = "Invalid username or password.";
+                return;
+            }
+
+            if (errorEl) errorEl.textContent = "";
+            passwordEl.value = "";
+            setCurrentUser({
+                username: user.username,
+                displayName: user.displayName,
+                role: user.role
+            });
+        }
+
+        function initAuthEvents() {
+            const loginBtn = document.getElementById("login-btn");
+            if (loginBtn) loginBtn.addEventListener("click", handleLogin);
+
+            const loginPassword = document.getElementById("login-password");
+            if (loginPassword) {
+                loginPassword.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter") handleLogin();
+                });
+            }
+
+            const logoutBtn = document.getElementById("logout-btn");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", () => {
+                    if (confirm("Logout from this device?")) {
+                        setCurrentUser(null);
+                    }
+                });
+            }
+        }
+
+        // ========== DEMO FUNCTIONS ==========
+        function showOutput(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.innerHTML = `<span class="${type}">${content}</span>`;
+        }
+
+        function showStorageInfo() {
+            const info = storage.getStorageInfo();
+            const output = `
+Storage Information:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total Size: ${info.totalSizeKB} KB (${info.totalSizeMB} MB)
+Items Count: ${info.itemCount}
+Usage: ${info.usagePercent}%
+Estimated Limit: ${info.estimatedLimit} KB
+
+Individual Items:
+${Object.entries(info.items).map(([key, item]) =>
+                `  ${key}: ${item.sizeKB} KB`
+            ).join('\n')}
+      `.trim();
+            showOutput('storageInfo', output, 'success');
+            refreshStats();
+        }
+
+        function addSampleInventory() {
+            const sampleItems = [
+                { id: 'item1', name: 'Rose Attar', type: 'Attar', price: 500, stock: 10 },
+                { id: 'item2', name: 'Jasmine Attar', type: 'Attar', price: 450, stock: 15 },
+                { id: 'item3', name: 'Sandalwood Attar', type: 'Attar', price: 600, stock: 8 },
+                { id: 'item4', name: 'Musk Attar', type: 'Attar', price: 550, stock: 12 },
+            ];
+
+            const inventory = storage.getInventory();
+            const newItems = sampleItems.filter(item =>
+                !inventory.find(i => i.id === item.id)
+            );
+
+            newItems.forEach(item => storage.addInventoryItem(item));
+
+            showOutput('inventoryOutput',
+                `✓ Added ${newItems.length} sample items to inventory\nTotal items: ${storage.getInventory().length}`,
+                'success'
+            );
+            refreshStats();
+        }
+
+        function showInventory() {
+            const inventory = storage.getInventory();
+            if (inventory.length === 0) {
+                showOutput('inventoryOutput', '⚠ No inventory items found', 'error');
+                return;
+            }
+
+            const output = `
+Inventory (${inventory.length} items):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${inventory.map((item, i) =>
+                `${i + 1}. ${item.name} (${item.type})
+   Price: ₹${item.price} | Stock: ${item.stock}`
+            ).join('\n\n')}
+      `.trim();
+            showOutput('inventoryOutput', output, 'success');
+        }
+
+        function clearInventory() {
+            if (!confirm('Clear all inventory items?')) return;
+            storage.saveInventory([]);
+            showOutput('inventoryOutput', '✓ Inventory cleared', 'success');
+            refreshStats();
+        }
+
+        function addSampleSale() {
+            const sale = {
+                id: 'sale_' + Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                timestamp: new Date().toISOString(),
+                invoiceNumber: `INV-2025-${storage.incrementInvoiceSequence(2025)}`,
+                customerName: 'Demo Customer',
+                customerMobile: '1234567890',
+                createdBy: 'demo',
+                createdByName: 'Demo User',
+                totals: {
+                    totalQty: 3,
+                    subtotal: 1500,
+                    discountPercent: 10,
+                    discountAmount: 150,
+                    taxable: 1350,
+                    gstPercent: 18,
+                    gstAmount: 243,
+                    grandTotal: 1593
+                },
+                items: [
+                    { name: 'Rose Attar', qty: 2, rate: 500, amount: 1000 },
+                    { name: 'Jasmine Attar', qty: 1, rate: 500, amount: 500 }
+                ]
+            };
+
+            storage.addSale(sale);
+            showOutput('salesOutput',
+                `✓ Sale added successfully\nInvoice: ${sale.invoiceNumber}\nTotal: ₹${sale.totals.grandTotal}`,
+                'success'
+            );
+            refreshStats();
+        }
+
+        function showSales() {
+            const sales = storage.getSales();
+            if (sales.length === 0) {
+                showOutput('salesOutput', '⚠ No sales records found', 'error');
+                return;
+            }
+
+            const output = `
+Sales Records (${sales.length} total):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${sales.slice(-5).reverse().map((sale, i) =>
+                `${i + 1}. ${sale.invoiceNumber} - ${sale.customerName}
+   Date: ${sale.date} | Total: ₹${sale.totals.grandTotal.toFixed(2)}
+   Items: ${sale.totals.totalQty}`
+            ).join('\n\n')}
+
+${sales.length > 5 ? `\n... and ${sales.length - 5} more` : ''}
+      `.trim();
+            showOutput('salesOutput', output, 'success');
+        }
+
+        function showSalesStats() {
+            const stats = storage.getSalesStats();
+            const output = `
+Sales Statistics:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total Sales: ${stats.totalSales}
+Total Revenue: ₹${stats.totalRevenue.toFixed(2)}
+Total Items Sold: ${stats.totalItems}
+Total Discount: ₹${stats.totalDiscount.toFixed(2)}
+Total GST: ₹${stats.totalGST.toFixed(2)}
+Average Order Value: ₹${stats.averageOrderValue.toFixed(2)}
+      `.trim();
+            showOutput('salesOutput', output, 'success');
+        }
+
+        function createDemoBackup() {
+            const result = storage.createBackup('demo_backup');
+            if (result.success) {
+                showOutput('backupOutput',
+                    `✓ Backup created successfully\nName: ${result.name}\nTimestamp: ${result.timestamp}`,
+                    'success'
+                );
+            } else {
+                showOutput('backupOutput', '✗ Failed to create backup', 'error');
+            }
+        }
+
+        function listDemoBackups() {
+            const backups = storage.listBackups();
+            if (backups.length === 0) {
+                showOutput('backupOutput', '⚠ No backups found', 'error');
+                return;
+            }
+
+            const output = `
+Available Backups (${backups.length}):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${backups.map((backup, i) =>
+                `${i + 1}. ${backup.name}
+   Date: ${backup.date}
+   Version: ${backup.version}`
+            ).join('\n\n')}
+      `.trim();
+            showOutput('backupOutput', output, 'success');
+        }
+
+        function exportDemoData() {
+            const data = storage.exportData();
+            const blob = new Blob([data], { type: 'application/json' });
+            const size = (blob.size / 1024).toFixed(2);
+
+            showOutput('backupOutput',
+                `✓ Data exported\nSize: ${size} KB\n\nPreview:\n${data.substring(0, 200)}...`,
+                'success'
+            );
+        }
+
+        function validateDemoData() {
+            const validation = storage.validateData();
+            if (validation.valid) {
+                showOutput('validationOutput', '✓ All data is valid!', 'success');
+            } else {
+                const output = `
+⚠ Data Validation Issues Found:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${validation.issues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
+
+Total Issues: ${validation.issues.length}
+        `.trim();
+                showOutput('validationOutput', output, 'error');
+            }
+        }
+
+        function corruptData() {
+            const inventory = storage.getInventory();
+            inventory.push({ invalid: 'item' });
+            storage.saveInventory(inventory);
+
+            showOutput('validationOutput',
+                '⚠ Added corrupted data for demonstration\nRun "Validate Data" to see issues',
+                'error'
+            );
+        }
+
+        function repairDemoData() {
+            const result = storage.repairData();
+            showOutput('validationOutput',
+                `✓ Data repaired\nRemoved ${result.repaired} invalid entries`,
+                'success'
+            );
+            refreshStats();
+        }
+
+        function refreshStats() {
+            const inventory = storage.getInventory();
+            const sales = storage.getSales();
+            const stats = storage.getSalesStats();
+            const info = storage.getStorageInfo();
+
+            document.getElementById('statInventory').textContent = inventory.length;
+            document.getElementById('statSales').textContent = sales.length;
+            document.getElementById('statRevenue').textContent = '₹' + stats.totalRevenue.toFixed(0);
+            document.getElementById('statStorage').textContent = info.usagePercent + '%';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuthEvents();
+            tryAutoLogin();
+            refreshStats();
+        });
+    </script>
+</body>
+
+</html>

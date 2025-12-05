@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>SOOFI ATTARS - Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+  <link href="https://fonts.cdnfonts.com/css/sahara-scrolls" rel="stylesheet">
   <style>
     /* === SAME DESIGN SYSTEM AS BILLING PAGE === */
     :root {
@@ -20,12 +21,14 @@
       --border-soft: rgba(250, 204, 21, 0.25);
       --danger: #dc2626;
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
+
     body {
       min-height: 100vh;
       background: radial-gradient(circle at top, #064e3b 0, #020617 55%, #000 100%);
@@ -60,33 +63,38 @@
       gap: 1rem;
       margin-bottom: 0.75rem;
     }
+
     .brand {
       display: flex;
       flex-direction: column;
       gap: 0.1rem;
     }
+
     .brand-title {
-      font-size: 1.7rem;
-      font-weight: 700;
+      font-size: 2.5rem;
+      font-family: 'Sahara Scrolls', serif !important;
       letter-spacing: 0.04em;
       color: var(--gold);
-      text-transform: uppercase;
+      text-transform: capitalize !important;
       text-shadow:
         0 0 12px rgba(250, 204, 21, 0.7),
         0 0 30px rgba(21, 128, 61, 0.6);
     }
+
     .brand-subtitle {
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.25em;
       color: var(--text-muted);
     }
+
     .shop-info {
       margin-top: 0.25rem;
       font-size: 0.75rem;
       color: var(--text-muted);
       line-height: 1.3;
     }
+
     .chip {
       border-radius: 999px;
       padding: 0.35rem 0.9rem;
@@ -98,6 +106,7 @@
       color: var(--gold);
       white-space: nowrap;
     }
+
     .user-info-header {
       display: flex;
       align-items: center;
@@ -108,7 +117,8 @@
     }
 
     /* BUTTONS */
-    button, a.button-link {
+    button,
+    a.button-link {
       border: none;
       cursor: pointer;
       font-weight: 600;
@@ -130,6 +140,7 @@
       justify-content: center;
       gap: 0.35rem;
     }
+
     button:hover,
     a.button-link:hover {
       transform: translateY(-1px);
@@ -138,11 +149,13 @@
         0 16px 33px rgba(250, 204, 21, 0.4),
         0 0 26px rgba(22, 163, 74, 0.5);
     }
+
     button:active,
     a.button-link:active {
       transform: translateY(1px) scale(0.98);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
     }
+
     .btn-secondary {
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 118, 110, 0.9));
       color: #e5e7eb;
@@ -163,6 +176,7 @@
       flex-direction: column;
       gap: 0.6rem;
     }
+
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -170,16 +184,19 @@
       gap: 0.5rem;
       margin-bottom: 0.3rem;
     }
+
     .card-title {
       font-size: 1rem;
       text-transform: uppercase;
       letter-spacing: 0.18em;
       color: var(--gold);
     }
+
     .card-subtitle {
       font-size: 0.76rem;
       color: var(--text-muted);
     }
+
     .pill {
       border-radius: 999px;
       border: 1px solid rgba(52, 211, 153, 0.4);
@@ -219,6 +236,7 @@
       main {
         grid-template-columns: minmax(0, 1fr);
       }
+
       header {
         flex-direction: column;
         align-items: flex-start;
@@ -226,11 +244,12 @@
     }
   </style>
 </head>
+
 <body>
   <div class="app-container">
     <header>
       <div class="brand">
-        <div class="brand-title">SOOFI ATTARS</div>
+        <div class="brand-title">Soofi Attars</div>
         <div class="brand-subtitle">A Divine Fragrance</div>
         <div class="shop-info">
           <div>6/ 723, 2 nd Main Road, Muthamizh nagar, <br>Kodungaiyur, Chennai - 600118</div>
@@ -268,7 +287,7 @@
         </div>
 
         <div class="module-actions">
-          <a href="/billing.html" class="button-link">
+          <a href="billing.html" class="button-link">
             Open Billing
           </a>
         </div>
@@ -295,7 +314,7 @@
         </div>
 
         <div class="module-actions">
-          <a href="/inventory.html" class="button-link btn-secondary">
+          <a href="inventory.html" class="button-link btn-secondary">
             Open Inventory
           </a>
         </div>
@@ -307,4 +326,5 @@
     </div>
   </div>
 </body>
+
 </html>

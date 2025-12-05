@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storage Manager - SOOFI ATTARS</title>
+  <link href="https://fonts.cdnfonts.com/css/sahara-scrolls" rel="stylesheet">
+  <style>
+    /* === SAME DESIGN SYSTEM AS MAIN APP === */
+    :root {
+      --deep-green: #064e3b;
+      --soft-green: #0f766e;
+      --light-green: #ecfdf5;
+      --gold: #facc15;
+      --gold-deep: #d4af37;
+      --bg-dark: #020617;
+      --card-bg: #020617;
+      --text-main: #f9fafb;
+      --text-muted: #a1a1aa;
+      --border-soft: rgba(250, 204, 21, 0.25);
+      --danger: #dc2626;
+      --success: #22c55e;
+      --warning: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #064e3b 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* LOGIN SCREEN */
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #064e3b 0, #020617 60%, #000 100%);
+      z-index: 50;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 360px;
+      background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.3), rgba(15, 23, 42, 0.98));
+      border-radius: 20px;
+      padding: 1.5rem 1.5rem 1.3rem;
+      border: 1px solid rgba(250, 204, 21, 0.4);
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.9),
+        0 0 60px rgba(22, 163, 74, 0.5);
+    }
+
+    .login-title {
+      font-size: 2.3rem;
+      font-family: 'Sahara Scrolls', serif !important;
+      letter-spacing: 0.18em;
+      text-transform: capitalize !important;
+      color: var(--gold);
+      margin-bottom: 0.1rem;
+      text-align: center;
+    }
+
+    .login-subtitle {
+      font-size: 0.8rem;
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .login-card label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+      display: inline-block;
+    }
+
+    .login-card input {
+      width: 100%;
+      padding: 0.45rem 0.55rem;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      margin-bottom: 0.65rem;
+    }
+
+    .login-card input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.4);
+      background: rgba(15, 23, 42, 1);
+    }
+
+    .login-card .login-btn {
+      width: 100%;
+      margin-top: 0.3rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .login-hint {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
+
+    .login-error {
+      min-height: 1rem;
+      font-size: 0.75rem;
+      color: #fecaca;
+      text-align: center;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1400px;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(135deg, rgba(15, 118, 110, 0.16), rgba(0, 0, 0, 0.8));
+      border-radius: 24px;
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.8),
+        0 0 80px rgba(22, 163, 74, 0.25),
+        inset 0 0 0 1px rgba(15, 118, 110, 0.3);
+      padding: 1.5rem 1.75rem 2rem;
+      display: none;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .brand-title {
+      font-size: 2.5rem;
+      font-family: 'Sahara Scrolls', serif !important;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+      text-transform: capitalize !important;
+      text-shadow:
+        0 0 12px rgba(250, 204, 21, 0.7),
+        0 0 30px rgba(21, 128, 61, 0.6);
+    }
+
+    .brand-subtitle {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--text-muted);
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      border: 1px solid rgba(250, 204, 21, 0.45);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: radial-gradient(circle at top, rgba(250, 204, 21, 0.16), rgba(15, 23, 42, 0.8));
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    .user-info-header {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .small-btn {
+      padding: 0.2rem 0.45rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: #e5e7eb;
+      box-shadow: none;
+      cursor: pointer;
+    }
+
+    .small-btn:hover {
+      background: rgba(22, 163, 74, 0.9);
+      border-color: rgba(52, 211, 153, 0.8);
+    }
+
+    /* BUTTONS */
+    button,
+    a.button-link {
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #111827;
+      box-shadow:
+        0 10px 25px rgba(250, 204, 21, 0.3),
+        0 0 18px rgba(22, 163, 74, 0.35);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    button:hover,
+    a.button-link:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.02);
+      box-shadow:
+        0 16px 33px rgba(250, 204, 21, 0.4),
+        0 0 26px rgba(22, 163, 74, 0.5);
+    }
+
+    button:active,
+    a.button-link:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 118, 110, 0.9));
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.8);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: white;
+    }
+
+    .btn-small {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* CARDS */
+    .card {
+      background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.15), rgba(15, 23, 42, 0.95));
+      border-radius: 20px;
+      padding: 1rem 1rem 1.25rem;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.7),
+        0 0 35px rgba(34, 197, 94, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+    }
+
+    .card-subtitle {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #bbf7d0;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    /* GRID LAYOUTS */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    /* INFO ITEMS */
+    .info-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .info-label {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    .info-value {
+      color: var(--gold);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-deep));
+      transition: width 0.3s;
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+    }
+
+    /* BUTTON GROUP */
+    .btn-group {
+      display: grid;
+      gap: 0.6rem;
+      margin-top: 0.75rem;
+    }
+
+    /* BACKUP LIST */
+    .backup-list {
+      max-height: 350px;
+      overflow-y: auto;
+      margin-top: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .backup-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .backup-list::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 4px;
+    }
+
+    .backup-list::-webkit-scrollbar-thumb {
+      background: rgba(250, 204, 21, 0.3);
+      border-radius: 4px;
+    }
+
+    .backup-item {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 0.85rem;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .backup-info {
+      flex: 1;
+    }
+
+    .backup-name {
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+
+    .backup-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .backup-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* FILE INPUT */
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input-wrapper input[type=file] {
+      position: absolute;
+      left: -9999px;
+    }
+
+    .file-input-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.55rem 0.9rem;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 118, 110, 0.9));
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      transition: all 0.1s ease;
+    }
+
+    .file-input-label:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.8);
+    }
+
+    /* STATUS BADGES */
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .status-good {
+      background: rgba(34, 197, 94, 0.2);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .status-warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .status-danger {
+      background: rgba(220, 38, 38, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(220, 38, 38, 0.4);
+    }
+
+    /* TOAST */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.2), rgba(15, 23, 42, 0.98));
+      backdrop-filter: blur(10px);
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      min-width: 300px;
+      animation: slideIn 0.3s ease;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast-success {
+      border-left: 4px solid #22c55e;
+    }
+
+    .toast-error {
+      border-left: 4px solid #dc2626;
+    }
+
+    .toast-info {
+      border-left: 4px solid var(--gold);
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.15), rgba(15, 23, 42, 0.98));
+      backdrop-filter: blur(14px);
+      padding: 1.75rem;
+      border-radius: 20px;
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      max-width: 500px;
+      width: 100%;
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.9),
+        0 0 80px rgba(22, 163, 74, 0.25);
+    }
+
+    .modal-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-header h3 {
+      color: var(--gold);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .modal-body {
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .toast {
+        min-width: 250px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="login-title">Soofi Attars</div>
+      <div class="login-subtitle">Staff Login</div>
+
+      <label for="login-username">Username</label>
+      <input id="login-username" type="text" placeholder="e.g. admin" />
+
+      <label for="login-password">Password</label>
+      <input id="login-password" type="password" placeholder="••••••••" />
+
+      <div class="login-hint">
+        Demo users: <strong>admin</strong> | <strong>cashier</strong>
+      </div>
+
+      <button type="button" class="login-btn" id="login-btn">Login</button>
+      <div class="login-error" id="login-error"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div class="app-container" id="app-container">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="brand-title">Soofi Attars</div>
+        <div class="brand-subtitle">Storage Manager</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.35rem;">
+        <div class="chip">Data Management</div>
+        <div class="user-info-header">
+          <span>Logged in as: <strong id="currentUserName">-</strong></span>
+          <button type="button" class="small-btn" id="logout-btn">Logout</button>
+        </div>
+        <a href="index.html" class="button-link btn-secondary btn-small">← Back to Dashboard</a>
+      </div>
+    </header>
+
+    <!-- Storage Info & Stats -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Storage Usage</div>
+            <div class="card-subtitle">Monitor your local storage consumption</div>
+          </div>
+          <div class="pill" id="usagePercent">-</div>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Total Size:</span>
+            <span class="info-value" id="totalSize">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Items Count:</span>
+            <span class="info-value" id="itemCount">-</span>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div class="btn-group">
+          <button onclick="refreshStorageInfo()">🔄 Refresh Info</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Data Statistics</div>
+            <div class="card-subtitle">Overview of your business data</div>
+          </div>
+          <div class="pill" id="dataHealth">-</div>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Inventory Items:</span>
+            <span class="info-value" id="inventoryCount">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Sales Records:</span>
+            <span class="info-value" id="salesCount">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Total Revenue:</span>
+            <span class="info-value" id="totalRevenue">-</span>
+          </div>
+        </div>
+        <div class="btn-group">
+          <button class="btn-warning" onclick="validateData()">🔍 Validate Data</button>
+          <button class="btn-success" onclick="repairData()">🔧 Repair Data</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backup & Import/Export -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Backup & Restore</div>
+            <div class="card-subtitle">Protect your data with backups</div>
+          </div>
+        </div>
+        <div class="btn-group">
+          <button onclick="showCreateBackupModal()">💾 Create Backup</button>
+          <button class="btn-secondary" onclick="loadBackups()">📋 Refresh List</button>
+        </div>
+        <div class="backup-list" id="backupList">
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <p>No backups yet. Create your first backup!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Import & Export</div>
+            <div class="card-subtitle">Transfer data between devices</div>
+          </div>
+        </div>
+        <div class="btn-group">
+          <button class="btn-success" onclick="exportData()">📤 Export All Data</button>
+          <div class="file-input-wrapper">
+            <input type="file" id="importFile" accept=".json" onchange="handleImportFile(event)">
+            <label for="importFile" class="file-input-label">
+              📥 Import Data (Replace)
+            </label>
+          </div>
+          <div class="file-input-wrapper">
+            <input type="file" id="mergeFile" accept=".json" onchange="handleMergeFile(event)">
+            <label for="mergeFile" class="file-input-label">
+              🔀 Import Data (Merge)
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">⚠️ Danger Zone</div>
+          <div class="card-subtitle">These actions cannot be undone. Please be careful!</div>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Backup Modal -->
+  <div class="modal" id="createBackupModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create Backup</h3>
+      </div>
+      <div class="modal-body">
+        <label for="backupName">Backup Name (optional):</label>
+        <input type="text" id="backupName" placeholder="e.g., Before Update">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="hideCreateBackupModal()">Cancel</button>
+        <button onclick="createBackup()">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // ========== AUTH / LOGIN ==========
+    let currentUser = null;
+
+    const USERS = [
+      { username: "admin", password: "admin123", displayName: "Admin", role: "admin" },
+      { username: "cashier", password: "cashier123", displayName: "Cashier", role: "cashier" }
+    ];
+
+    function setCurrentUser(user) {
+      currentUser = user || null;
+      const app = document.getElementById("app-container");
+      const loginScreen = document.getElementById("login-screen");
+      const nameSpan = document.getElementById("currentUserName");
+
+      if (currentUser) {
+        storage.saveCurrentUser(currentUser);
+        if (nameSpan) nameSpan.textContent = currentUser.displayName || currentUser.username;
+        if (loginScreen) loginScreen.style.display = "none";
+        if (app) app.style.display = "flex";
+      } else {
+        storage.clearCurrentUser();
+        if (nameSpan) nameSpan.textContent = "-";
+        if (app) app.style.display = "none";
+        if (loginScreen) loginScreen.style.display = "flex";
+      }
+    }
+
+    function tryAutoLogin() {
+      const stored = storage.getCurrentUser();
+      if (!stored) {
+        const ls = document.getElementById("login-screen");
+        if (ls) ls.style.display = "flex";
+        return;
+      }
+      setCurrentUser(stored);
+    }
+
+    function handleLogin() {
+      const usernameEl = document.getElementById("login-username");
+      const passwordEl = document.getElementById("login-password");
+      const errorEl = document.getElementById("login-error");
+      if (!usernameEl || !passwordEl) return;
+
+      const username = usernameEl.value.trim();
+      const password = passwordEl.value;
+
+      const user = USERS.find(
+        (u) => u.username === username && u.password === password
+      );
+
+      if (!user) {
+        if (errorEl) errorEl.textContent = "Invalid username or password.";
+        return;
+      }
+
+      if (errorEl) errorEl.textContent = "";
+      passwordEl.value = "";
+      setCurrentUser({
+        username: user.username,
+        displayName: user.displayName,
+        role: user.role
+      });
+    }
+
+    function initAuthEvents() {
+      const loginBtn = document.getElementById("login-btn");
+      if (loginBtn) loginBtn.addEventListener("click", handleLogin);
+
+      const loginPassword = document.getElementById("login-password");
+      if (loginPassword) {
+        loginPassword.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") handleLogin();
+        });
+      }
+
+      const logoutBtn = document.getElementById("logout-btn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          if (confirm("Logout from this device?")) {
+            setCurrentUser(null);
+          }
+        });
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      initAuthEvents();
+      tryAutoLogin();
+      refreshStorageInfo();
+      loadBackups();
+    });
+
+    // Show toast notification
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = 'slideIn 0.3s ease reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Refresh storage info
+    function refreshStorageInfo() {
+      const info = storage.getStorageInfo();
+
+      if (info) {
+        document.getElementById('totalSize').textContent = info.totalSizeKB + ' KB';
+        document.getElementById('itemCount').textContent = info.itemCount;
+        document.getElementById('usagePercent').textContent = info.usagePercent + '%';
+        document.getElementById('progressFill').style.width = info.usagePercent + '%';
+
+        // Update data statistics
+        const inventory = storage.getInventory();
+        const sales = storage.getSales();
+        const stats = storage.getSalesStats();
+
+        document.getElementById('inventoryCount').textContent = inventory.length;
+        document.getElementById('salesCount').textContent = sales.length;
+        document.getElementById('totalRevenue').textContent = '₹' + stats.totalRevenue.toFixed(2);
+
+        // Data health
+        const validation = storage.validateData();
+        const healthBadge = document.getElementById('dataHealth');
+        if (validation.valid) {
+          healthBadge.innerHTML = '<span class="status-badge status-good">✓ Healthy</span>';
+        } else {
+          healthBadge.innerHTML = `<span class="status-badge status-danger">⚠ ${validation.issues.length} Issues</span>`;
+        }
+      }
+    }
+
+    // Validate data
+    function validateData() {
+      const validation = storage.validateData();
+
+      if (validation.valid) {
+        showToast('✓ All data is valid!', 'success');
+      } else {
+        showToast(`⚠ Found ${validation.issues.length} issues. Check console for details.`, 'error');
+        console.log('Data validation issues:', validation.issues);
+      }
+    }
+
+    // Repair data
+    function repairData() {
+      if (!confirm('This will remove invalid data entries. Continue?')) return;
+
+      const result = storage.repairData();
+      showToast(`✓ Repaired ${result.repaired} invalid entries`, 'success');
+      refreshStorageInfo();
+    }
+
+    // Show create backup modal
+    function showCreateBackupModal() {
+      document.getElementById('createBackupModal').classList.add('show');
+    }
+
+    // Hide create backup modal
+    function hideCreateBackupModal() {
+      document.getElementById('createBackupModal').classList.remove('show');
+      document.getElementById('backupName').value = '';
+    }
+
+    // Create backup
+    function createBackup() {
+      const name = document.getElementById('backupName').value.trim() || null;
+      const result = storage.createBackup(name);
+
+      if (result.success) {
+        showToast('✓ Backup created successfully!', 'success');
+        hideCreateBackupModal();
+        loadBackups();
+      } else {
+        showToast('✗ Failed to create backup', 'error');
+      }
+    }
+
+    // Load backups
+    function loadBackups() {
+      const backups = storage.listBackups();
+      const container = document.getElementById('backupList');
+
+      if (backups.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <p>No backups yet. Create your first backup!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = backups.map(backup => `
+        <div class="backup-item">
+          <div class="backup-info">
+            <div class="backup-name">${backup.name}</div>
+            <div class="backup-date">${backup.date}</div>
+          </div>
+          <div class="backup-actions">
+            <button class="btn-small btn-success" onclick="restoreBackup(${backup.timestamp})">Restore</button>
+            <button class="btn-small btn-danger" onclick="deleteBackup(${backup.timestamp})">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Restore backup
+    function restoreBackup(timestamp) {
+      if (!confirm('This will replace all current data with the backup. Continue?')) return;
+
+      const success = storage.restoreBackup(timestamp);
+
+      if (success) {
+        showToast('✓ Backup restored successfully!', 'success');
+        refreshStorageInfo();
+      } else {
+        showToast('✗ Failed to restore backup', 'error');
+      }
+    }
+
+    // Delete backup
+    function deleteBackup(timestamp) {
+      if (!confirm('Delete this backup?')) return;
+
+      const success = storage.deleteBackup(timestamp);
+
+      if (success) {
+        showToast('✓ Backup deleted', 'success');
+        loadBackups();
+      } else {
+        showToast('✗ Failed to delete backup', 'error');
+      }
+    }
+
+    // Export data
+    function exportData() {
+      storage.downloadExport();
+      showToast('✓ Data exported successfully!', 'success');
+    }
+
+    // Handle import file
+    function handleImportFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!confirm('This will REPLACE all current data. Continue?')) {
+        event.target.value = '';
+        return;
+      }
+
+      storage.importFromFile(file, { merge: false })
+        .then(result => {
+          if (result.success) {
+            showToast('✓ Data imported successfully!', 'success');
+            refreshStorageInfo();
+          } else {
+            showToast('✗ Import failed: ' + result.message, 'error');
+          }
+          event.target.value = '';
+        })
+        .catch(error => {
+          showToast('✗ Import failed: ' + error.message, 'error');
+          event.target.value = '';
+        });
+    }
+
+    // Handle merge file
+    function handleMergeFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!confirm('This will MERGE imported data with existing data. Continue?')) {
+        event.target.value = '';
+        return;
+      }
+
+      storage.importFromFile(file, { merge: true })
+        .then(result => {
+          if (result.success) {
+            showToast('✓ Data merged successfully!', 'success');
+            refreshStorageInfo();
+          } else {
+            showToast('✗ Merge failed: ' + result.message, 'error');
+          }
+          event.target.value = '';
+        })
+        .catch(error => {
+          showToast('✗ Merge failed: ' + error.message, 'error');
+          event.target.value = '';
+        });
+    }
+
+    // Clear all data
+    function clearAllData() {
+      const confirmation = prompt('This will DELETE ALL DATA permanently! Type "DELETE" to confirm:');
+
+      if (confirmation !== 'DELETE') {
+        showToast('Operation cancelled', 'info');
+        return;
+      }
+
+      const success = storage.clearAll();
+
+      if (success) {
+        showToast('✓ All data cleared', 'success');
+        refreshStorageInfo();
+        loadBackups();
+      } else {
+        showToast('✗ Failed to clear data', 'error');
+      }
+    }
+  </script>
+</body>
+
+</html>
